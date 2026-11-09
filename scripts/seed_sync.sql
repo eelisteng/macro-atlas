@@ -1,0 +1,1 @@
+INSERT INTO sync_logs (source,indicator_count,inserted_count,updated_count,failed_count,note) VALUES ('国家统计局 · 国家数据 API', 12, 823, 0, 0, '年度 GDP 六组序列与月度 CPI/PMI/M2/M1/失业率；CPI 由上年同月=100 指数换算为同比；分片逐段拼接；空值不入图；转载须注明转自国家统计局网站 www.stats.gov.cn')

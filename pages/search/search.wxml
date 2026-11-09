@@ -1,0 +1,35 @@
+<view class="page">
+    <view class="page-header">
+        <text class="page-title">搜索指标</text>
+        <text class="page-subtitle">按名称、别名、代码或分类查找</text>
+    </view>
+
+    <view class="search-bar">
+        <input class="search-input" value="{{keyword}}" bindinput="onInput" placeholder="例如 CPI、失业率、M2" />
+        <text class="link" bindtap="onClear">清除</text>
+    </view>
+
+    <view class="notice notice-error" wx:if="{{errorText}}"><text class="small">{{errorText}}</text></view>
+    <view class="state-card" wx:if="{{loading}}">
+        <text class="state-title">正在读取指标字典</text>
+        <text class="state-desc">稍候即可搜索</text>
+    </view>
+
+    <block wx:else>
+        <text class="small">共 {{results.length}} 个指标 · 数据缺口会明确标注原因</text>
+        <view class="card result-card">
+            <view class="result-item" wx:for="{{results}}" wx:key="code" data-code="{{item.code}}" bindtap="onItemTap">
+                <view class="result-left">
+                    <text class="result-name">{{item.name}}</text>
+                    <text class="small">{{item.meta}}</text>
+                    <text class="small" wx:if="{{!item.hasData}}">{{item.gapReason}}</text>
+                </view>
+                <view class="result-right">
+                    <text class="badge badge-gap" wx:if="{{!item.hasData}}">数据缺口</text>
+                    <text class="badge" wx:else>{{item.count}} 个点</text>
+                    <text class="link">查看 ›</text>
+                </view>
+            </view>
+        </view>
+    </block>
+</view>

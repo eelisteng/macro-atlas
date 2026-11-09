@@ -1,0 +1,171 @@
+.meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8rpx 20rpx;
+    background: #e6f1fb;
+    border-radius: 16rpx;
+    padding: 16rpx 20rpx;
+    margin-bottom: 24rpx;
+}
+
+.meta-text {
+    font-size: 22rpx;
+    color: #185fa5;
+}
+
+.meta-search {
+    margin-left: auto;
+    font-size: 22rpx;
+    color: #185fa5;
+}
+
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16rpx;
+}
+
+.metric-card {
+    width: calc(50% - 8rpx);
+    box-sizing: border-box;
+    background: #ffffff;
+    border-radius: 20rpx;
+    padding: 20rpx;
+}
+
+.metric-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.metric-name {
+    font-size: 24rpx;
+    color: #3d4149;
+}
+
+.metric-freq {
+    font-size: 20rpx;
+    color: #9a9ea6;
+}
+
+.metric-value {
+    display: flex;
+    align-items: baseline;
+    gap: 6rpx;
+    margin-top: 10rpx;
+}
+
+.metric-number {
+    font-size: 40rpx;
+    font-weight: 500;
+    color: #1a1d23;
+}
+
+.metric-unit {
+    font-size: 20rpx;
+    color: #8a8f99;
+}
+
+.metric-period {
+    display: block;
+    font-size: 20rpx;
+    color: #9a9ea6;
+    margin-top: 4rpx;
+}
+
+.spark {
+    height: 44rpx;
+    margin-top: 12rpx;
+    display: flex;
+    align-items: flex-end;
+    gap: 3rpx;
+}
+
+.spark-bar {
+    flex: 1;
+    background: #b5d4f4;
+    border-radius: 2rpx 2rpx 0 0;
+    min-height: 4rpx;
+}
+
+.metric-delta {
+    display: block;
+    font-size: 20rpx;
+    color: #8a8f99;
+    margin-top: 8rpx;
+}
+
+.gap-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8rpx;
+    margin-top: 12rpx;
+}
+
+.recent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16rpx 0;
+    border-bottom: 1rpx solid #eef0f4;
+}
+
+.recent-item:last-child {
+    border-bottom: none;
+}
+
+.recent-left {
+    display: flex;
+    flex-direction: column;
+    gap: 6rpx;
+    flex: 1;
+    min-width: 0;
+}
+
+.recent-title {
+    font-size: 26rpx;
+    color: #1f2329;
+}
+
+.recent-sub {
+    font-size: 20rpx;
+    color: #9a9ea6;
+}
+
+.recent-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6rpx;
+    margin-left: 16rpx;
+}
+
+.recent-value {
+    font-size: 26rpx;
+    color: #185fa5;
+}
+
+.topic-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+}
+
+.explain-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10rpx;
+    margin-top: 28rpx;
+}
+
+.explain-title {
+    font-size: 26rpx;
+    font-weight: 500;
+}
+
+.footer-note {
+    margin-top: 24rpx;
+    line-height: 1.6;
+}

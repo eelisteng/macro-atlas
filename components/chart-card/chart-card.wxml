@@ -1,0 +1,10 @@
+<view class="chart-wrap">
+    <view class="legend" wx:if="{{legend.length > 0}}">
+        <view class="legend-item" wx:for="{{legend}}" wx:key="label">
+            <view class="legend-dot" style="background: {{item.color}}"></view>
+            <text class="legend-label">{{item.label}}</text>
+            <text class="legend-unit">{{item.unit}}</text>
+        </view>
+    </view>
+    <canvas type="2d" id="chart" class="chart-canvas" style="height: {{height}}px;" bindtap="onTap"></canvas>
+</view>

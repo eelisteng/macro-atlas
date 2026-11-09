@@ -1,0 +1,37 @@
+.chart-wrap {
+    width: 100%;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16rpx;
+    padding: 0 4rpx 8rpx;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6rpx;
+}
+
+.legend-dot {
+    width: 14rpx;
+    height: 14rpx;
+    border-radius: 50%;
+}
+
+.legend-label {
+    font-size: 22rpx;
+    color: #3d4149;
+}
+
+.legend-unit {
+    font-size: 20rpx;
+    color: #9a9ea6;
+}
+
+.chart-canvas {
+    width: 100%;
+    display: block;
+}

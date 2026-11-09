@@ -1,0 +1,56 @@
+<view class="page">
+    <view class="page-header">
+        <text class="page-title">关于宏观图鉴</text>
+        <text class="page-subtitle">看懂十年经济数据 · 可追溯的宏观数据台账</text>
+    </view>
+
+    <view class="state-card" wx:if="{{viewState === 'loading'}}">
+        <text class="state-title">正在读取同步状态</text>
+        <text class="state-desc">稍候即可查看</text>
+    </view>
+    <view class="state-card" wx:elif="{{viewState === 'error'}}">
+        <text class="state-title">加载失败</text>
+        <text class="state-desc">{{errorText}}</text>
+        <button class="primary-button" bindtap="onRetry">重新加载</button>
+    </view>
+
+    <block wx:else>
+        <view class="stat-grid">
+            <view class="stat-card"><text class="small">数据更新至</text><text class="stat-value">{{updatedAt}}</text></view>
+            <view class="stat-card"><text class="small">已收录指标</text><text class="stat-value">{{indicatorCount}}</text></view>
+            <view class="stat-card"><text class="small">数据点总数</text><text class="stat-value">{{pointCount}}</text></view>
+        </view>
+
+        <text class="section-title">数据同步记录</text>
+        <view class="card" wx:if="{{syncLogs.length > 0}}">
+            <view class="log-item" wx:for="{{syncLogs}}" wx:key="id">
+                <text class="log-title">{{item.source}} · {{item.when}}</text>
+                <text class="small">{{item.text}}</text>
+                <text class="small" wx:if="{{item.note}}">{{item.note}}</text>
+            </view>
+        </view>
+        <view class="card" wx:else>
+            <text class="muted">暂无同步记录。首次打开速览页会自动写入内置的一手来源数据。</text>
+        </view>
+
+        <view class="card">
+            <button class="ghost-button" disabled="{{resyncing}}" bindtap="onResync">{{resyncing ? '同步中…' : '同步内置数据到云端'}}</button>
+            <text class="small" wx:if="{{resyncMessage}}">{{resyncMessage}}</text>
+            <text class="small" wx:else>取数由会话侧脚本完成，这里只负责把随包数据写入本 app 的云数据库。</text>
+        </view>
+
+        <text class="section-title">功能入口</text>
+        <view class="card">
+            <view class="menu-item" bindtap="onGoTopics"><text>按专题浏览</text><text class="link">›</text></view>
+            <view class="menu-item" bindtap="onGoData"><text>数据表与手动录入</text><text class="link">›</text></view>
+        </view>
+
+        <text class="section-title">数据来源与分享</text>
+        <view class="card source-card">
+            <text class="muted">{{sourceCite}}</text>
+            <text class="muted">指标释义、口径标签与来源随每个数据点保存；共享长图已带来源水印。</text>
+            <text class="muted">本版不直连外部数据接口，也不对开放的读者提供写入能力；他人查看请使用「生成分享图」。</text>
+            <text class="muted">跨地区比较默认禁止不同口径叠加，只提供对齐视图，避免误读。</text>
+        </view>
+    </block>
+</view>

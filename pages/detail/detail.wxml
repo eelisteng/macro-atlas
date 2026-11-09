@@ -1,0 +1,104 @@
+<view class="page">
+    <view class="state-card" wx:if="{{viewState === 'loading'}}">
+        <text class="state-title">正在加载指标</text>
+        <text class="state-desc">读取口径、来源与历史序列</text>
+    </view>
+    <view class="state-card" wx:elif="{{viewState === 'error'}}">
+        <text class="state-title">加载失败</text>
+        <text class="state-desc">{{errorText}}</text>
+        <button class="primary-button" bindtap="onRetry">重新加载</button>
+    </view>
+
+    <block wx:else>
+        <view class="page-header">
+            <text class="page-title">{{name}}</text>
+            <text class="page-subtitle">{{metaText}}</text>
+        </view>
+
+        <view class="explain-card">
+            <text class="explain-label">一句话解释</text>
+            <text class="explain-body">{{explainer}}</text>
+            <view class="divider"></view>
+            <text class="explain-label">怎么读</text>
+            <text class="explain-body">{{howToRead}}</text>
+            <view class="divider"></view>
+            <text class="explain-label">口径与来源</text>
+            <text class="explain-body">口径：{{caliber}}</text>
+            <text class="explain-body">来源：{{sourceName}}</text>
+            <text class="small" wx:if="{{sourceUrl}}">{{sourceUrl}}</text>
+            <text class="explain-body">相关指标：{{related}}</text>
+        </view>
+
+        <view class="notice" wx:if="{{!hasData}}">
+            <text class="small">数据缺口：{{gapReason}}\n该指标不会以估算值补空，下方图表会明确显示暂无数据。</text>
+        </view>
+
+        <view class="toolbar">
+            <view class="chip {{range === item.key ? 'chip-active' : ''}}" wx:for="{{ranges}}" wx:key="key" data-key="{{item.key}}" bindtap="onRangeTap">{{item.label}}</view>
+            <view class="chip {{mode === 'bar' ? 'chip-active' : ''}}" wx:if="{{compareMode === 'single'}}" data-mode="bar" bindtap="onModeTap">柱状</view>
+            <view class="chip {{mode === 'line' ? 'chip-active' : ''}}" wx:if="{{compareMode === 'single'}}" data-mode="line" bindtap="onModeTap">折线</view>
+        </view>
+        <view class="toolbar">
+            <picker mode="selector" range="{{compareNames}}" bindchange="onComparePick">
+                <view class="chip {{compareName ? 'chip-active' : ''}}">{{compareName || '+ 对比指标'}}</view>
+            </picker>
+            <view class="chip" bindtap="onShareImage">生成分享图</view>
+        </view>
+
+        <view class="notice" wx:if="{{compareWarning}}">
+            <text class="small">{{compareWarning}}</text>
+        </view>
+
+        <view class="chart-card" wx:for="{{charts}}" wx:key="key">
+            <view class="caliber-labels">
+                <text class="small" wx:for="{{caliberLabels}}" wx:for-item="label" wx:key="*this">口径标签 · {{label}}</text>
+            </view>
+            <chart-card id="chart-{{index}}" periods="{{item.periods}}" series="{{item.series}}" mode="{{item.mode}}" dualAxis="{{item.dualAxis}}" growthMode="{{item.growthMode}}" sourceText="{{item.sourceText}}" height="{{item.height}}" highlightIndex="{{highlightIndex}}" bind:pointtap="onPointTap"></chart-card>
+            <text class="small">点击折线上的数据点，查看前值、预期值、修订值与来源。</text>
+        </view>
+
+        <view class="point-panel" wx:if="{{selectedPoint}}">
+            <view class="row-between">
+                <text class="point-title">{{selectedPoint.period}} · {{name}}</text>
+                <text class="link" bindtap="closePoint">关闭</text>
+            </view>
+            <view class="point-grid">
+                <view class="point-cell"><text class="small">公布值</text><text class="point-value">{{selectedPoint.value}}</text></view>
+                <view class="point-cell"><text class="small">前值</text><text class="point-value">{{selectedPoint.previous}}</text></view>
+                <view class="point-cell"><text class="small">预期值</text><text class="point-value">{{selectedPoint.consensus}}</text></view>
+                <view class="point-cell"><text class="small">修正值</text><text class="point-value">{{selectedPoint.revised}}</text></view>
+            </view>
+            <view class="row-between" wx:if="{{selectedPoint.surprise}}">
+                <text class="badge badge-primary">{{selectedPoint.surprise}}</text>
+                <text class="badge badge-revision">{{selectedPoint.badge}}</text>
+            </view>
+            <text class="small">口径：{{selectedPoint.caliber}}</text>
+            <text class="small">来源：{{selectedPoint.source}} · 发布时间 {{selectedPoint.releaseDate}}</text>
+            <text class="small">备注：{{selectedPoint.note}}</text>
+            <text class="small">缺口原因：{{selectedPoint.gapReason}}</text>
+            <button class="ghost-button" bindtap="onGoData">到数据表编辑这条记录</button>
+        </view>
+
+        <text class="section-title">最近数据</text>
+        <view class="card" wx:if="{{tableRows.length > 0}}">
+            <view class="table-row" wx:for="{{tableRows}}" wx:key="id">
+                <view class="table-left">
+                    <text class="table-period">{{item.period}}</text>
+                    <text class="small">{{item.source}}</text>
+                </view>
+                <view class="table-right">
+                    <text class="table-value">{{item.value}}</text>
+                    <text class="small">{{item.badge}}<block wx:if="{{item.surprise}}"> · {{item.surprise}}</block></text>
+                </view>
+            </view>
+        </view>
+        <view class="card" wx:else>
+            <text class="muted">暂无数据点。可从「数据」页手动录入，或由会话侧批量灌库。</text>
+        </view>
+
+        <view class="row-between">
+            <text class="small">{{sourceCite}}</text>
+            <text class="link" bindtap="onGoData">录入数据 ›</text>
+        </view>
+    </block>
+</view>

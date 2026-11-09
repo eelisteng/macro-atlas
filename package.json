@@ -1,0 +1,13 @@
+{
+  "name": "macro-atlas-miniprogram",
+  "version": "1.0.0",
+  "private": true,
+  "description": "宏观图鉴 - 历年宏观经济数据台账与图表读物",
+  "scripts": {
+    "setup": "node scripts/setup-local-config.js",
+    "check:secrets": "node scripts/check-secrets.js"
+  },
+  "dependencies": {
+    "@tencent-ai/workbuddy-cloud-sdk": "dev"
+  }
+}

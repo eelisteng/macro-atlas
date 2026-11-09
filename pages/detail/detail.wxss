@@ -1,0 +1,109 @@
+.explain-card {
+    background: #ffffff;
+    border-radius: 20rpx;
+    padding: 24rpx;
+    display: flex;
+    flex-direction: column;
+    gap: 8rpx;
+    margin-bottom: 20rpx;
+}
+
+.explain-label {
+    font-size: 22rpx;
+    color: #185fa5;
+}
+
+.explain-body {
+    font-size: 25rpx;
+    line-height: 1.6;
+    color: #3d4149;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    margin-bottom: 14rpx;
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: 20rpx;
+    padding: 20rpx;
+    margin-bottom: 20rpx;
+}
+
+.caliber-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 4rpx;
+    margin-bottom: 10rpx;
+}
+
+.point-panel {
+    background: #ffffff;
+    border-radius: 20rpx;
+    padding: 24rpx;
+    display: flex;
+    flex-direction: column;
+    gap: 10rpx;
+    margin-bottom: 20rpx;
+}
+
+.point-title {
+    font-size: 28rpx;
+    font-weight: 500;
+}
+
+.point-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16rpx;
+    margin: 8rpx 0;
+}
+
+.point-cell {
+    width: calc(50% - 8rpx);
+    background: #f5f7fa;
+    border-radius: 12rpx;
+    padding: 14rpx;
+    display: flex;
+    flex-direction: column;
+    gap: 6rpx;
+}
+
+.point-value {
+    font-size: 28rpx;
+}
+
+.table-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16rpx 0;
+    border-bottom: 1rpx solid #eef0f4;
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.table-left,
+.table-right {
+    display: flex;
+    flex-direction: column;
+    gap: 6rpx;
+}
+
+.table-right {
+    align-items: flex-end;
+}
+
+.table-period {
+    font-size: 26rpx;
+}
+
+.table-value {
+    font-size: 28rpx;
+    color: #185fa5;
+}

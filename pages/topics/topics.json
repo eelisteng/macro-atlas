@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "宏观图鉴 · 专题",
+  "usingComponents": {
+    "chart-card": "../../components/chart-card/chart-card"
+  }
+}

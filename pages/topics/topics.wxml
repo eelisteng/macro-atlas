@@ -1,0 +1,54 @@
+<view class="page">
+    <view class="page-header">
+        <text class="page-title">专题浏览</text>
+        <text class="page-subtitle">按问题找数据，而不是按指标字典找</text>
+    </view>
+
+    <view class="chip-row">
+        <view class="chip {{activeCategory === item.key ? 'chip-active' : ''}}" wx:for="{{categories}}" wx:key="key" data-key="{{item.key}}" bindtap="onCategoryTap">{{item.name}}</view>
+        <view class="chip" bindtap="onSearchTap">搜索 ›</view>
+    </view>
+
+    <view class="state-card" wx:if="{{viewState === 'loading'}}">
+        <text class="state-title">正在整理专题</text>
+        <text class="state-desc">读取指标字典与历史序列</text>
+    </view>
+    <view class="state-card" wx:elif="{{viewState === 'error'}}">
+        <text class="state-title">加载失败</text>
+        <text class="state-desc">{{errorText}}</text>
+        <button class="primary-button" bindtap="onRetry">重新加载</button>
+    </view>
+
+    <block wx:else>
+        <view class="intro-card">
+            <text class="intro-name">{{topicName}}</text>
+            <text class="muted">{{topicDesc}}</text>
+        </view>
+
+        <view class="chart-card" wx:for="{{charts}}" wx:key="code" data-code="{{item.code}}" bindtap="onIndicatorTap">
+            <view class="row-between">
+                <text class="chart-title">{{item.title}}</text>
+                <text class="link">详情 ›</text>
+            </view>
+            <text class="chart-caliber">口径：{{item.caliber}}</text>
+            <chart-card periods="{{item.periods}}" series="{{item.series}}" mode="{{item.mode}}" dualAxis="{{item.dualAxis}}" growthMode="{{item.growthMode}}" sourceText="{{item.sourceText}}" height="{{item.height}}"></chart-card>
+        </view>
+
+        <text class="section-title">本专题全部指标</text>
+        <view class="card">
+            <view class="ind-row" wx:for="{{list}}" wx:key="code" data-code="{{item.code}}" bindtap="onIndicatorTap">
+                <view class="ind-left">
+                    <text class="ind-name">{{item.name}}</text>
+                    <text class="small">{{item.caliber}}</text>
+                </view>
+                <text class="badge badge-gap" wx:if="{{!item.hasData}}">数据缺口</text>
+                <text class="badge" wx:else>可查看</text>
+            </view>
+        </view>
+
+        <view class="notice" wx:if="{{gaps.length > 0}}">
+            <text class="small">以下指标暂未灌入数值，原因已逐条标注，绝不以估算值补空：\n</text>
+            <text class="small" wx:for="{{gaps}}" wx:key="code">· {{item.name}}：{{item.reason}}\n</text>
+        </view>
+    </block>
+</view>

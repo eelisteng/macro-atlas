@@ -1,0 +1,81 @@
+<view class="page">
+    <view class="page-header">
+        <text class="page-title">经济速览</text>
+        <text class="page-subtitle">宏观图鉴 · 看懂十年经济数据</text>
+    </view>
+
+    <view class="meta-bar" bindtap="onSearchTap">
+        <text class="meta-text">数据更新至 {{updatedAt}}</text>
+        <text class="meta-text">{{indicatorCount}} 个指标 · {{pointCount}} 个数据点</text>
+        <text class="meta-search">搜索指标 ›</text>
+    </view>
+
+    <view class="state-card" wx:if="{{viewState === 'loading'}}">
+        <text class="state-title">正在加载云端数据</text>
+        <text class="state-desc">首次打开会读取指标字典与历史序列</text>
+    </view>
+
+    <view class="state-card" wx:elif="{{viewState === 'error'}}">
+        <text class="state-title">数据加载失败</text>
+        <text class="state-desc">{{errorText}}</text>
+        <button class="primary-button" bindtap="onRetry">重新加载</button>
+    </view>
+
+    <block wx:else>
+        <view class="card-grid">
+            <view class="metric-card" wx:for="{{cards}}" wx:key="code" data-code="{{item.code}}" bindtap="onCardTap">
+                <view class="metric-top">
+                    <text class="metric-name">{{item.name}}</text>
+                    <text class="metric-freq">{{item.freq}}</text>
+                </view>
+                <view class="metric-value">
+                    <text class="metric-number">{{item.value}}</text>
+                    <text class="metric-unit" wx:if="{{item.hasData}}">{{item.valueUnit}}</text>
+                </view>
+                <text class="metric-period">{{item.period}}</text>
+                <view class="spark" wx:if="{{item.hasData}}">
+                    <view class="spark-bar" wx:for="{{item.spark}}" wx:for-item="h" wx:key="*this" style="height: {{h}}%;"></view>
+                </view>
+                <view wx:else class="gap-box">
+                    <text class="badge badge-gap">数据缺口</text>
+                    <text class="small">{{item.delta}}</text>
+                </view>
+                <text class="metric-delta" wx:if="{{item.hasData}}">{{item.delta}}</text>
+            </view>
+        </view>
+
+        <view class="row-between">
+            <text class="section-title">最新数据</text>
+            <text class="small">按数据期间</text>
+        </view>
+        <view class="card" wx:if="{{recent.length > 0}}">
+            <view class="recent-item" wx:for="{{recent}}" wx:key="id" data-code="{{item.code}}" bindtap="onRecentTap">
+                <view class="recent-left">
+                    <text class="recent-title">{{item.title}}</text>
+                    <text class="recent-sub">{{item.sub}}</text>
+                </view>
+                <view class="recent-right">
+                    <text class="recent-value">{{item.value}}</text>
+                    <text class="link">查看 ›</text>
+                </view>
+            </view>
+        </view>
+        <view class="card" wx:else>
+            <text class="muted">暂无入库记录。批量灌库完成后这里会显示最近更新。</text>
+        </view>
+
+        <text class="section-title">按专题浏览</text>
+        <view class="topic-chips">
+            <view class="chip chip-active" wx:for="{{topics}}" wx:key="key" data-key="{{item.key}}" bindtap="onTopicTap">{{item.name}}</view>
+        </view>
+
+        <view class="card explain-card" bindtap="onSearchTap">
+            <text class="explain-title">这个指标怎么看？</text>
+            <text class="muted">点任意指标或搜索，查看一句话解释、怎么读、口径与来源、相关指标。</text>
+        </view>
+
+        <view class="footer-note">
+            <text class="small">数值来自国家统计局等一手来源，转载引用须注明「转自国家统计局网站 www.stats.gov.cn」。</text>
+        </view>
+    </block>
+</view>

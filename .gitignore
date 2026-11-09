@@ -1,0 +1,19 @@
+# 环境变量与本地密钥（绝不提交）
+.env
+.env.*
+!.env.example
+
+# 由 scripts/setup-local-config.js 从环境变量生成的本地私有配置
+project.private.config.json
+utils/local-env.js
+.wbapp_*.privacy.json
+
+# 依赖源码（仓库保留 miniprogram_npm/ 构建产物即可）
+node_modules/
+
+# 开发过程产物：登录二维码、预览二维码、头像草稿、模拟器原始截图
+.workbuddy/
+
+# 系统与编辑器
+.DS_Store
+*.log

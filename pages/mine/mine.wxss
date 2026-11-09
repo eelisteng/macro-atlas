@@ -1,0 +1,56 @@
+.stat-grid {
+    display: flex;
+    gap: 12rpx;
+    margin-bottom: 8rpx;
+}
+
+.stat-card {
+    flex: 1;
+    background: #ffffff;
+    border-radius: 16rpx;
+    padding: 18rpx 14rpx;
+    display: flex;
+    flex-direction: column;
+    gap: 10rpx;
+}
+
+.stat-value {
+    font-size: 28rpx;
+    font-weight: 500;
+    color: #185fa5;
+}
+
+.log-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6rpx;
+    padding: 14rpx 0;
+    border-bottom: 1rpx solid #eef0f4;
+}
+
+.log-item:last-child {
+    border-bottom: none;
+}
+
+.log-title {
+    font-size: 26rpx;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 20rpx 0;
+    border-bottom: 1rpx solid #eef0f4;
+    font-size: 27rpx;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.source-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12rpx;
+    line-height: 1.6;
+}

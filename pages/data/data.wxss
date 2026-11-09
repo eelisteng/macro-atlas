@@ -1,0 +1,104 @@
+.picker-value {
+    font-size: 28rpx;
+    color: #1f2329;
+    padding: 12rpx 0;
+}
+
+.add-link,
+.delete-link {
+    margin-left: 20rpx;
+}
+
+.form-card {
+    background: #ffffff;
+    border-radius: 20rpx;
+    padding: 24rpx;
+    margin-bottom: 20rpx;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-title {
+    font-size: 30rpx;
+    font-weight: 500;
+    margin-bottom: 8rpx;
+}
+
+.field-label {
+    display: block;
+    font-size: 22rpx;
+    color: #6b717a;
+    margin-top: 18rpx;
+}
+
+.field-input {
+    background: #f5f7fa;
+    border-radius: 10rpx;
+    padding: 12rpx 16rpx;
+    font-size: 26rpx;
+    margin-top: 6rpx;
+}
+
+.field-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 20rpx;
+}
+
+.field-grid > view {
+    width: calc(50% - 10rpx);
+}
+
+.form-actions {
+    display: flex;
+    gap: 16rpx;
+    margin-top: 28rpx;
+}
+
+.form-actions button {
+    flex: 1;
+}
+
+.data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 18rpx 0;
+    border-bottom: 1rpx solid #eef0f4;
+}
+
+.data-row:last-child {
+    border-bottom: none;
+}
+
+.data-left,
+.data-right {
+    display: flex;
+    flex-direction: column;
+    gap: 6rpx;
+}
+
+.data-right {
+    align-items: flex-end;
+}
+
+.data-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.data-period {
+    font-size: 27rpx;
+}
+
+.data-value {
+    font-size: 28rpx;
+    color: #185fa5;
+}
+
+.badge-gap-text {
+    color: #854f0b;
+}
+
+.footer-note {
+    margin-top: 20rpx;
+}

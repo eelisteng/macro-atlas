@@ -1,0 +1,98 @@
+<view class="page">
+    <view class="page-header">
+        <text class="page-title">数据表</text>
+        <text class="page-subtitle">按指标 × 期间查阅，手动录入与修订</text>
+    </view>
+
+    <view class="state-card" wx:if="{{viewState === 'loading'}}">
+        <text class="state-title">正在加载指标字典</text>
+        <text class="state-desc">稍候即可查阅与录入</text>
+    </view>
+    <view class="state-card" wx:elif="{{viewState === 'error'}}">
+        <text class="state-title">加载失败</text>
+        <text class="state-desc">{{errorText}}</text>
+        <button class="primary-button" bindtap="onRetry">重新加载</button>
+    </view>
+
+    <block wx:else>
+        <view class="card">
+            <text class="small">当前指标</text>
+            <picker mode="selector" range="{{indicatorNames}}" value="{{indicatorIndex}}" bindchange="onPick">
+                <view class="picker-value">{{indicatorNames[indicatorIndex]}} ›</view>
+            </picker>
+            <text class="small">口径：{{selected.caliber}}</text>
+            <text class="small">单位：{{selected.unit}} · 来源：{{selected.source_name}}</text>
+        </view>
+
+        <view class="row-between">
+            <text class="section-title">数据点（{{rows.length}}）</text>
+            <view class="row">
+                <text class="link" bindtap="onSearchTap">搜索 ›</text>
+                <text class="link add-link" bindtap="onAdd">+ 录入</text>
+            </view>
+        </view>
+
+        <view class="notice notice-error" wx:if="{{errorText}}">
+            <text class="small">{{errorText}}</text>
+        </view>
+
+        <view class="form-card" wx:if="{{showForm}}">
+            <text class="form-title">{{editingId ? '编辑数据点' : '录入数据点'}}</text>
+            <text class="small">所有字段均会保存到云数据库，来源与口径随值保存。</text>
+            <view class="notice notice-error" wx:if="{{formError}}"><text class="small">{{formError}}</text></view>
+
+            <text class="field-label">数据期间 * （{{periodHint}}）</text>
+            <input class="field-input" value="{{form.period}}" data-field="period" bindinput="onFormInput" placeholder="{{periodHint}}" />
+            <text class="field-label">数值（留空请填缺口原因）</text>
+            <input class="field-input" type="digit" value="{{form.value}}" data-field="value" bindinput="onFormInput" placeholder="例如 1401879.2" />
+            <view class="field-grid">
+                <view><text class="field-label">前值</text><input class="field-input" type="digit" value="{{form.previous}}" data-field="previous" bindinput="onFormInput" placeholder="可留空" /></view>
+                <view><text class="field-label">预期值</text><input class="field-input" type="digit" value="{{form.consensus}}" data-field="consensus" bindinput="onFormInput" placeholder="可留空" /></view>
+                <view><text class="field-label">修正值</text><input class="field-input" type="digit" value="{{form.revised}}" data-field="revised" bindinput="onFormInput" placeholder="可留空" /></view>
+                <view><text class="field-label">发布时间</text><input class="field-input" value="{{form.release_date}}" data-field="release_date" bindinput="onFormInput" placeholder="YYYY-MM-DD" /></view>
+            </view>
+            <text class="field-label">口径</text>
+            <input class="field-input" value="{{form.caliber}}" data-field="caliber" bindinput="onFormInput" />
+            <text class="field-label">来源</text>
+            <input class="field-input" value="{{form.source}}" data-field="source" bindinput="onFormInput" />
+            <text class="field-label">修订版本</text>
+            <picker mode="selector" range="{{revisions}}" value="{{revisionIndex}}" bindchange="onRevisionPick">
+                <view class="picker-value small">{{revisions[revisionIndex]}} ›</view>
+            </picker>
+            <text class="field-label">备注 / 数据缺口原因</text>
+            <input class="field-input" value="{{form.note}}" data-field="note" bindinput="onFormInput" placeholder="备注" />
+            <input class="field-input" value="{{form.gap_reason}}" data-field="gap_reason" bindinput="onFormInput" placeholder="数值留空时必填" />
+
+            <view class="form-actions">
+                <button class="ghost-button" bindtap="onCancel">取消</button>
+                <button class="primary-button" disabled="{{saving}}" bindtap="onSubmit">{{saving ? '保存中…' : '保存到云端'}}</button>
+            </view>
+        </view>
+
+        <view class="card" wx:if="{{rows.length > 0}}">
+            <view class="data-row" wx:for="{{rows}}" wx:key="id">
+                <view class="data-left">
+                    <text class="data-period">{{item.period}}</text>
+                    <text class="small">{{item.caliber}}</text>
+                    <text class="small">{{item.source}}</text>
+                    <text class="small badge-gap-text" wx:if="{{item.gap}}">缺口：{{item.gapReason}}</text>
+                </view>
+                <view class="data-right">
+                    <text class="data-value">{{item.value}}</text>
+                    <text class="small">{{item.badge}}<block wx:if="{{item.surprise}}"> · {{item.surprise}}</block></text>
+                    <view class="row">
+                        <text class="link" data-id="{{item.id}}" bindtap="onEdit">编辑</text>
+                        <text class="link delete-link" data-id="{{item.id}}" bindtap="onDelete">删除</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="card" wx:else>
+            <text class="muted">该指标暂无数据点。点右上角「+ 录入」添加，或由会话侧批量灌库。</text>
+        </view>
+
+        <view class="footer-note">
+            <text class="small">批量历史数据由会话侧脚本从国家统计局等一手源灌入，小程序不直连外部接口。</text>
+        </view>
+    </block>
+</view>
