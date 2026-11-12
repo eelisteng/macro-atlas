@@ -32,7 +32,11 @@
         <view class="chart-card" wx:for="{{charts}}" wx:key="code" data-code="{{item.code}}" bindtap="onIndicatorTap">
             <view class="row-between">
                 <text class="chart-title">{{item.title}}</text>
-                <text class="link">详情 ›</text>
+                <view class="chart-tools">
+                    <view class="mini-chip {{item.mode === 'line' ? 'mini-chip-active' : ''}}" data-index="{{index}}" data-mode="line" catchtap="onChartModeTap">折线</view>
+                    <view class="mini-chip {{item.mode === 'bar' ? 'mini-chip-active' : ''}}" data-index="{{index}}" data-mode="bar" catchtap="onChartModeTap">柱状</view>
+                    <text class="link" data-code="{{item.code}}" catchtap="onIndicatorTap">详情 ›</text>
+                </view>
             </view>
             <text class="chart-caliber">口径：{{item.caliber}}</text>
             <chart-card periods="{{item.periods}}" series="{{item.series}}" mode="{{item.mode}}" dualAxis="{{item.dualAxis}}" growthMode="{{item.growthMode}}" sourceText="{{item.sourceText}}" height="{{item.height}}"></chart-card>

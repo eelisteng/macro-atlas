@@ -76,6 +76,14 @@ function draw(ctx, width, height, config) {
 
     var ranges = [];
     series.forEach(function (s) { ranges.push(collectRange(s.points || [])); });
+    var barSingle = cfg.mode === 'bar' && series.length === 1;
+    // 柱状图必须以 0 为基线。若数值全为正，niceRange 会把 min 抬到 0 以上，
+    // 此时柱顶与零点不在同一坐标系里，柱子会被画到画布外。这里统一把范围扩到含 0，
+    // Y 轴刻度也因此能显示 0，避免读者误判量级。
+    if (barSingle && ranges[0]) {
+        if (ranges[0].min > 0) ranges[0].min = 0;
+        if (ranges[0].max < 0) ranges[0].max = 0;
+    }
     var mainRange = ranges[0];
 
     // 轴标签宽度随数值变化：GDP 等六位数标签用固定的 46px 左边距会被画布裁掉。
@@ -125,28 +133,27 @@ function draw(ctx, width, height, config) {
         return padT + plotH - ((value - range.min) / span) * plotH;
     }
 
-    // 零轴：增速柱状与含负值的图必须显示，避免视觉误读。
-    if (cfg.growthMode || mainRange.min < 0) {
-        if (mainRange.min < 0 && mainRange.max > 0) {
-            var zeroY = yAt(0, mainRange);
-            ctx.strokeStyle = '#B4B8C0';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(padL, zeroY);
-            ctx.lineTo(padL + plotW, zeroY);
-            ctx.stroke();
-        }
+    // 零轴：柱状图以 0 为基线，增速图与含负值的折线图也必须显示，避免视觉误读。
+    var showZeroLine = barSingle || cfg.growthMode || (mainRange.min < 0 && mainRange.max > 0);
+    if (showZeroLine && mainRange.min <= 0 && mainRange.max >= 0) {
+        var zeroY = yAt(0, mainRange);
+        ctx.strokeStyle = '#B4B8C0';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(padL, zeroY);
+        ctx.lineTo(padL + plotW, zeroY);
+        ctx.stroke();
     }
 
-    if (cfg.mode === 'bar' && series.length === 1) {
+    if (barSingle) {
         var barW = Math.max(2, Math.min(18, plotW / periods.length * 0.62));
+        var zeroBar = yAt(0, ranges[0]);
         series[0].points.forEach(function (p, i) {
             var n = toNumber(p.value);
             if (n === null) return;
             var y = yAt(n, ranges[0]);
-            var zero = yAt(0, ranges[0].min < 0 ? ranges[0] : { min: 0, max: ranges[0].max });
-            var top = Math.min(y, zero);
-            var h = Math.max(1, Math.abs(zero - y));
+            var top = Math.min(y, zeroBar);
+            var h = Math.max(1, Math.abs(zeroBar - y));
             ctx.fillStyle = cfg.growthMode ? (n >= 0 ? POSITIVE : NEGATIVE) : (series[0].color || COLORS[0]);
             ctx.fillRect(xAt(i) - barW / 2, top, barW, h);
             hitAreas.push({ x: xAt(i), y: top, index: i, period: periods[i], value: n, label: series[0].label });

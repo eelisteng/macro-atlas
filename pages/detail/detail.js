@@ -71,7 +71,7 @@ Page({
                 sourceUrl: current.source_url || '',
                 gapReason: vm.gapText(current),
                 compareNames: ['不对比'].concat(list.filter(function (x) { return x.code !== current.code; }).map(function (x) { return x.name; })),
-                mode: current.value_type === 'growth' && current.default_chart === 'bar' ? 'bar' : 'line',
+                mode: current.default_chart === 'bar' ? 'bar' : 'line',
             });
             wx.setNavigationBarTitle({ title: current.name });
             that.rebuild();
@@ -80,28 +80,31 @@ Page({
         });
     },
 
-    rebuild: function () {
+    // override 由工具栏显式传入新值，避免依赖 setData 更新 this.data 的时序。
+    rebuild: function (override) {
+        const opt = override || {};
+        const mode = opt.mode || this.data.mode;
+        const range = opt.range || this.data.range;
         const that = this;
         const current = this._current;
         const rows = this._rows;
         const compare = this._compareIndicator;
         const compareRows = this._compareRows;
-        const mainPeriods = vm.sliceByRange(vm.sortedPeriods(rows), current.frequency, this.data.range);
-        const growth = current.value_type === 'growth';
+        const mainPeriods = vm.sliceByRange(vm.sortedPeriods(rows), current.frequency, range);
         const charts = [];
         const labels = [];
         let compareMode = 'single';
         let warning = '';
 
         if (compare) {
-            const otherPeriods = vm.sliceByRange(vm.sortedPeriods(compareRows), compare.frequency, this.data.range);
+            const otherPeriods = vm.sliceByRange(vm.sortedPeriods(compareRows), compare.frequency, range);
             const sameGroup = current.comparable_group === compare.comparable_group;
             if (!sameGroup) {
                 // 口径/单位不同：禁止叠加，改为并排小多图。
                 compareMode = 'small';
                 warning = '两个指标的口径或单位不同，已改为并排小多图，禁止叠加比较。';
-                charts.push(this.makeChart(current, rows, mainPeriods, COLORS[0], growth && this.data.mode === 'bar'));
-                charts.push(this.makeChart(compare, compareRows, otherPeriods, COLORS[1], false));
+                charts.push(this.makeChart(current, rows, mainPeriods, COLORS[0], mode));
+                charts.push(this.makeChart(compare, compareRows, otherPeriods, COLORS[1], 'line'));
                 labels.push(current.name + '：' + current.caliber);
                 labels.push(compare.name + '：' + compare.caliber);
             } else {
@@ -131,7 +134,7 @@ Page({
                 }
             }
         } else {
-            charts.push(this.makeChart(current, rows, mainPeriods, COLORS[0], growth && this.data.mode === 'bar'));
+            charts.push(this.makeChart(current, rows, mainPeriods, COLORS[0], mode));
             labels.push(current.name + '：' + current.caliber);
         }
 
@@ -166,26 +169,32 @@ Page({
         });
     },
 
-    makeChart: function (indicator, rows, periods, color, barMode) {
+    // mode 由工具栏直接决定，不再限定只有增速类指标才能画柱状图。
+    // growthMode 只影响「红涨绿跌」配色，仍仅对增速类开启；总量、利率类沿用系列色。
+    makeChart: function (indicator, rows, periods, color, mode) {
+        const barMode = mode === 'bar';
+        const growth = indicator.value_type === 'growth';
         return {
             key: indicator.code + '-single',
             periods: periods,
             series: [vm.buildSeries(indicator, rows, periods, color)],
             mode: barMode ? 'bar' : 'line',
             dualAxis: false,
-            growthMode: barMode,
+            growthMode: growth && barMode,
             sourceText: vm.sourceText(indicator, rows[rows.length - 1]),
             height: 220,
         };
     },
 
     onRangeTap: function (event) {
-        this.setData({ range: event.currentTarget.dataset.key });
-        this.rebuild();
+        const range = event.currentTarget.dataset.key;
+        this.setData({ range: range });
+        this.rebuild({ range: range });
     },
     onModeTap: function (event) {
-        this.setData({ mode: event.currentTarget.dataset.mode });
-        this.rebuild();
+        const mode = event.currentTarget.dataset.mode;
+        this.setData({ mode: mode });
+        this.rebuild({ mode: mode });
     },
     onComparePick: function (event) {
         const index = Number(event.detail.value);

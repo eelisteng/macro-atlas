@@ -31,6 +31,32 @@
 .chart-title {
     font-size: 28rpx;
     font-weight: 500;
+    flex: 1;
+    min-width: 0;
+}
+
+.chart-tools {
+    display: flex;
+    align-items: center;
+    gap: 10rpx;
+    flex-shrink: 0;
+    margin-left: 12rpx;
+}
+
+.mini-chip {
+    padding: 4rpx 14rpx;
+    border-radius: 999rpx;
+    font-size: 20rpx;
+    line-height: 1.5;
+    color: #5f646d;
+    background: #ffffff;
+    border: 1rpx solid #e3e6ec;
+}
+
+.mini-chip-active {
+    background: #e6f1fb;
+    color: #185fa5;
+    border-color: #b5d4f4;
 }
 
 .chart-caliber {

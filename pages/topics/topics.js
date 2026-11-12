@@ -61,7 +61,9 @@ Page({
                 const rows = grouped[item.id] || [];
                 if (rows.length === 0) return;
                 const periods = vm.sliceByRange(vm.sortedPeriods(rows), item.frequency, '10');
-                const mode = item.value_type === 'growth' && item.default_chart === 'bar' ? 'bar' : 'line';
+                // 默认按字典的 default_chart 出图，总量类（如进出口金额）也允许用柱状图。
+                const mode = item.default_chart === 'bar' ? 'bar' : 'line';
+                const isGrowth = item.value_type === 'growth';
                 charts.push({
                     code: item.code,
                     title: item.name,
@@ -69,8 +71,9 @@ Page({
                     periods: periods,
                     series: [vm.buildSeries(item, rows, periods, COLORS[charts.length % COLORS.length])],
                     mode: mode,
+                    isGrowth: isGrowth,
                     dualAxis: false,
-                    growthMode: item.value_type === 'growth' && mode === 'bar',
+                    growthMode: isGrowth && mode === 'bar',
                     sourceText: vm.sourceText(item, rows[rows.length - 1]),
                     height: 200,
                 });
@@ -89,6 +92,16 @@ Page({
         });
     },
 
+    // 每张专题图独立切换折线 / 柱状；catchtap 阻止冒泡到卡片，避免误跳详情页。
+    onChartModeTap: function (event) {
+        const index = Number(event.currentTarget.dataset.index);
+        const mode = event.currentTarget.dataset.mode;
+        const charts = this.data.charts.map(function (c) { return Object.assign({}, c); });
+        if (!charts[index] || charts[index].mode === mode) return;
+        charts[index].mode = mode;
+        charts[index].growthMode = !!charts[index].isGrowth && mode === 'bar';
+        this.setData({ charts: charts });
+    },
     onCategoryTap: function (event) {
         this._category = event.currentTarget.dataset.key;
         this.load();

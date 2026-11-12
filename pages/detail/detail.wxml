@@ -35,8 +35,8 @@
 
         <view class="toolbar">
             <view class="chip {{range === item.key ? 'chip-active' : ''}}" wx:for="{{ranges}}" wx:key="key" data-key="{{item.key}}" bindtap="onRangeTap">{{item.label}}</view>
-            <view class="chip {{mode === 'bar' ? 'chip-active' : ''}}" wx:if="{{compareMode === 'single'}}" data-mode="bar" bindtap="onModeTap">柱状</view>
-            <view class="chip {{mode === 'line' ? 'chip-active' : ''}}" wx:if="{{compareMode === 'single'}}" data-mode="line" bindtap="onModeTap">折线</view>
+            <view class="chip {{mode === 'bar' ? 'chip-active' : ''}}" wx:if="{{compareMode !== 'overlay'}}" data-mode="bar" bindtap="onModeTap">柱状</view>
+            <view class="chip {{mode === 'line' ? 'chip-active' : ''}}" wx:if="{{compareMode !== 'overlay'}}" data-mode="line" bindtap="onModeTap">折线</view>
         </view>
         <view class="toolbar">
             <picker mode="selector" range="{{compareNames}}" bindchange="onComparePick">
@@ -54,7 +54,7 @@
                 <text class="small" wx:for="{{caliberLabels}}" wx:for-item="label" wx:key="*this">口径标签 · {{label}}</text>
             </view>
             <chart-card id="chart-{{index}}" periods="{{item.periods}}" series="{{item.series}}" mode="{{item.mode}}" dualAxis="{{item.dualAxis}}" growthMode="{{item.growthMode}}" sourceText="{{item.sourceText}}" height="{{item.height}}" highlightIndex="{{highlightIndex}}" bind:pointtap="onPointTap"></chart-card>
-            <text class="small">点击折线上的数据点，查看前值、预期值、修订值与来源。</text>
+            <text class="small">点击折线或柱子上的数据点，查看前值、预期值、修订值与来源。</text>
         </view>
 
         <view class="point-panel" wx:if="{{selectedPoint}}">
