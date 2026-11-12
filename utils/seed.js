@@ -16,24 +16,30 @@ async function ensureSeeded(force) {
     const byCode = {};
     (existing.data || []).forEach(function (row) { byCode[row.code] = row.id; });
 
-    if (Object.keys(byCode).length === 0) {
-        const indicatorRows = seed.indicators.map(function (item) {
-            return {
-                code: item.code, name: item.name, alias: item.alias,
-                category: item.category, region: item.region, unit: item.unit,
-                frequency: item.frequency, value_type: item.value_type,
-                caliber: item.caliber, default_chart: item.default_chart,
-                source_name: item.source_name, source_url: item.source_url,
-                comparable_group: item.comparable_group,
-                importance: item.importance, sort_order: item.sort_order,
-                is_custom: false,
-            };
-        });
-        const inserted = await cloud.database.from('indicators').insert(indicatorRows).select('id, code');
+    // 按 code 补齐缺失词条。云端字典已存在时也必须插入新增指标，否则新数据点
+    // 找不到 indicator_id 会在下面的 map 里被过滤掉，造成「静默丢数据」。
+    // 只插缺失项：不覆盖云端已有记录、不依赖 update 权限、也不改动用户手工编辑。
+    const indicatorRows = seed.indicators.map(function (item) {
+        return {
+            code: item.code, name: item.name, alias: item.alias,
+            category: item.category, region: item.region, unit: item.unit,
+            frequency: item.frequency, value_type: item.value_type,
+            caliber: item.caliber, default_chart: item.default_chart,
+            source_name: item.source_name, source_url: item.source_url,
+            comparable_group: item.comparable_group,
+            importance: item.importance, sort_order: item.sort_order,
+            is_custom: false,
+        };
+    });
+    const missing = indicatorRows.filter(function (row) { return !byCode[row.code]; });
+    if (missing.length > 0) {
+        const inserted = await cloud.database.from('indicators').insert(missing).select('id, code');
         if (inserted.error) return { inserted: 0, error: inserted.error.message || '指标字典写入失败', skipped: false };
         (inserted.data || []).forEach(function (row) { byCode[row.code] = row.id; });
     }
 
+    // 已有数据时首页启动不重复灌点；新批次可通过「我的 → 重新同步」(force=true)
+    // 或会话侧执行生成的 seed_points.sql 补齐，upsert 本身按 (指标,期间,修订) 幂等。
     if (!force) {
         const count = await cloud.database.from('data_points').select('id', { count: 'exact', head: true });
         if (!count.error && (count.count || 0) > 0) {

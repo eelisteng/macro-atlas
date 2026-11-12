@@ -26,11 +26,25 @@ async function listIndicators() {
     if (result.error) return { data: null, error: messageOf(result.error) };
     const data = rows(result.data).map(function (row) {
         const base = local[row.code] || {};
-        return Object.assign({}, base, row, {
+        // 说明文案（名称、口径、来源、可比分组等）以本地字典为准，随代码版本更新；
+        // id、importance、sort_order、is_custom 等管理字段仍以云端为准。
+        // 早期云端灌库后若字典口径修订，页面无需等云端回填即可显示正确说明。
+        return Object.assign({}, row, {
+            name: base.name || row.name,
+            alias: base.alias || row.alias,
+            category: base.category || row.category,
+            region: base.region || row.region,
+            unit: base.unit || row.unit,
+            frequency: base.frequency || row.frequency,
+            value_type: base.value_type || row.value_type,
+            caliber: base.caliber || row.caliber,
+            default_chart: base.default_chart || row.default_chart,
+            source_name: base.source_name || row.source_name,
+            source_url: base.source_url || row.source_url,
+            comparable_group: base.comparable_group || row.comparable_group || '',
             explainer: base.explainer || row.explainer || '',
             how_to_read: base.how_to_read || row.how_to_read || '',
             related: base.related || row.related || '',
-            comparable_group: base.comparable_group || row.comparable_group || '',
             gapReason: base.gapReason || '',
         });
     });

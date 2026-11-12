@@ -14,6 +14,10 @@ node_modules/
 # 开发过程产物：登录二维码、预览二维码、头像草稿、模拟器原始截图
 .workbuddy/
 
+# Python 缓存（会话侧取数脚本语法检查会生成）
+__pycache__/
+*.pyc
+
 # 系统与编辑器
 .DS_Store
 *.log

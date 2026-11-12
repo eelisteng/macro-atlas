@@ -48,11 +48,18 @@ Page({
                     region: item.region,
                 };
                 list.push(entry);
-                if (rows.length === 0) {
-                    gaps.push(entry);
-                    return;
-                }
+                if (rows.length === 0) gaps.push(entry);
+            });
+
+            // 首屏 3 张图按重要性挑选，而不是照字典顺序照单全收。
+            // 外贸专题里 2021 年低基数会把出口同比拉到三位数，若让它占首屏会压扁其余月份。
+            // 同分保持字典的 sort_order 顺序（Array.sort 稳定），列表顺序不变。
+            items.slice().sort(function (a, b) {
+                return (Number(b.importance) || 0) - (Number(a.importance) || 0);
+            }).forEach(function (item) {
                 if (charts.length >= 3) return;
+                const rows = grouped[item.id] || [];
+                if (rows.length === 0) return;
                 const periods = vm.sliceByRange(vm.sortedPeriods(rows), item.frequency, '10');
                 const mode = item.value_type === 'growth' && item.default_chart === 'bar' ? 'bar' : 'line';
                 charts.push({

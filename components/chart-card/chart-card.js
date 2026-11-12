@@ -28,11 +28,30 @@ Component({
     },
 
     methods: {
-        render: function () {
+        render: function (retry) {
             const that = this;
+            // 组件刚挂载时 canvas 常常还没完成布局（真机比模拟器明显），
+            // 按 width/height=0 画一次会留下永久空白图。这里等尺寸就绪再画。
+            const gen = (this._renderGen || 0) + 1;
+            this._renderGen = gen;
+            const attempt = retry || 0;
+            const scheduleRetry = function () {
+                if (attempt >= 6) {
+                    console.warn('[chart-card] canvas 尺寸未就绪，图表未绘制');
+                    return;
+                }
+                setTimeout(function () {
+                    if (gen !== that._renderGen) return; // 已被更新的属性触发的渲染取代
+                    that.render(attempt + 1);
+                }, 80 + attempt * 80);
+            };
             wx.createSelectorQuery().in(this).select('#chart').fields({ node: true, size: true, rect: true }).exec(function (res) {
-                if (!res || !res[0] || !res[0].node) return;
-                const info = res[0];
+                if (gen !== that._renderGen) return;
+                const info = res && res[0];
+                if (!info || !info.node || !info.width || !info.height) {
+                    scheduleRetry();
+                    return;
+                }
                 that._rectLeft = info.left || 0;
                 const canvas = info.node;
                 const ctx = canvas.getContext('2d');
@@ -47,15 +66,20 @@ Component({
                 that._width = width;
                 that._height = height;
                 const series = that.data.series || [];
-                that._hitAreas = chart.draw(ctx, width, height, {
-                    periods: that.data.periods || [],
-                    series: series,
-                    mode: that.data.mode,
-                    dualAxis: that.data.dualAxis,
-                    growthMode: that.data.growthMode,
-                    sourceText: that.data.sourceText,
-                    highlightIndex: that.data.highlightIndex >= 0 ? that.data.highlightIndex : undefined,
-                });
+                try {
+                    that._hitAreas = chart.draw(ctx, width, height, {
+                        periods: that.data.periods || [],
+                        series: series,
+                        mode: that.data.mode,
+                        dualAxis: that.data.dualAxis,
+                        growthMode: that.data.growthMode,
+                        sourceText: that.data.sourceText,
+                        highlightIndex: that.data.highlightIndex >= 0 ? that.data.highlightIndex : undefined,
+                    });
+                } catch (err) {
+                    console.error('[chart-card] 图表绘制失败', err);
+                    that._hitAreas = [];
+                }
                 const legend = series.map(function (s, i) {
                     return {
                         label: s.label,

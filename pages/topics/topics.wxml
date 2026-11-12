@@ -25,6 +25,10 @@
             <text class="muted">{{topicDesc}}</text>
         </view>
 
+        <view class="card" wx:if="{{charts.length === 0}}">
+            <text class="muted">本专题暂无可绘制的图表（指标可能尚未灌入数值或仍在加载），可在下方指标列表进入详情查看。</text>
+        </view>
+
         <view class="chart-card" wx:for="{{charts}}" wx:key="code" data-code="{{item.code}}" bindtap="onIndicatorTap">
             <view class="row-between">
                 <text class="chart-title">{{item.title}}</text>
